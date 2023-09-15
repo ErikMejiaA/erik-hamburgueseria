@@ -51,16 +51,13 @@ builder.Services.AddDbContext<DbAppContext>(options =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseStatusCodePagesWithReExecute("/errors/{0}");
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -76,6 +73,11 @@ using (var scope = app.Services.CreateScope())
         _logger.LogError(ex, "Ocurrio un error durante la migracion");
     }
 }
+
+//app.UseMiddleware<ExceptionMiddleware>();
+
+//app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
 app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();

@@ -10,17 +10,27 @@ namespace Persistencia
 {
     public class DbAppContext : DbContext
     {
-        public DbAppContext(DbContextOptions options) : base(options)
+        public DbAppContext(DbContextOptions<DbAppContext> options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        }
-         public DbSet<Rol> Roles { get; set; }
+        public DbSet<Rol> Roles { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<UsuarioRoles> UsuariosRoles { get; set; }
+        
+        public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Chef> Chefs { get; set; }
+        public DbSet<Hamburguesa> Hamburguesas { get; set; }
+        public DbSet<Ingrediente> Ingredientes { get; set; }
+        public DbSet<Hamburguesa_ingredientes> Hamburguesa_Ingredientes { get; set; } 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UsuarioRoles>().HasKey(p => new { p.UsuarioId, p.RolId});
+
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+        
     }
 }
