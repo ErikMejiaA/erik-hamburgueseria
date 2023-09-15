@@ -1,5 +1,3 @@
-
-
 using System.Linq.Expressions;
 using Dominio.Entities;
 using Dominio.Interfaces;
@@ -8,7 +6,7 @@ using Persistencia;
 
 namespace Aplicacion.Repository;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T> : IGenericInterface<T> where T : BaseEntity
 {
     private readonly DbAppContext _context;
 
@@ -60,8 +58,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public virtual void Update(T entity)
     {
-        _context.Set<T>()
-            .Update(entity);
+        _context.Set<T>().Update(entity);
     }
     public virtual async Task<(int totalRegistros, IEnumerable<T> registros)> GetAllAsync(int pageIndex, int pageSize, string _search)
     {

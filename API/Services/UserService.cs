@@ -18,9 +18,9 @@ namespace API.Services
     public class UserService : IUserService
     {
         private readonly JWT _jwt;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWorkInterface _unitOfWork;
         private readonly IPasswordHasher<Usuario> _passwordHasher;
-        public UserService(IUnitOfWork unitOfWork, IOptions<JWT> jwt, IPasswordHasher<Usuario> passwordHasher)
+        public UserService(IUnitOfWorkInterface unitOfWork, IOptions<JWT> jwt, IPasswordHasher<Usuario> passwordHasher)
         {
             _jwt = jwt.Value;
             _unitOfWork = unitOfWork;

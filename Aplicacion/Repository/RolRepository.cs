@@ -8,7 +8,7 @@ namespace Aplicacion.Repository
 {
     public class RolRepository:GenericRepository<Rol>,IRol
     {
-        private readonly DbAppContext _context;
+    private readonly DbAppContext _context;
 
     public RolRepository(DbAppContext context) : base(context)
     {

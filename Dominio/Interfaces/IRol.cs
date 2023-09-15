@@ -3,7 +3,7 @@ using Dominio.Entities;
 
 namespace Dominio.Interfaces
 {
-    public interface IRol : IGenericRepository<Rol>
+    public interface IRol : IGenericInterface<Rol>
     {
         
     }
