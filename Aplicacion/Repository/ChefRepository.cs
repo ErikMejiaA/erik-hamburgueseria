@@ -49,6 +49,22 @@ public class ChefRepository : GenericRepository<Chef>, IChefInterface
         return (totalRegistros, registros);
     }
 
-    
-    
+    public async Task<IEnumerable<Chef>> GetAllChefsCarnesAsync(string tipoCarne)
+    {
+        var lstChefsCarne = _context.Set<Chef>()
+        .Where(p => p.Especialidad.ToLower().Contains(tipoCarne.ToLower()))
+        .ToListAsync();
+
+        return await lstChefsCarne;
+    }
+
+    public async Task<IEnumerable<Chef>> GetAllHamburguesasChefAsync(string nombre)
+    {
+        var lstChefHamburguesa = _context.Set<Chef>()
+        .Include(p => p.Hamburguesas)
+        .Where(p => p.Nombre.ToLower().Contains(nombre.ToLower()))
+        .ToListAsync();
+
+        return await lstChefHamburguesa;
+    }
 }

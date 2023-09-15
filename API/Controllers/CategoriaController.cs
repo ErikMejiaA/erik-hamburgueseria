@@ -125,60 +125,17 @@ public class CategoriaController : BaseApiController
         return NoContent();
     }
 
-    //metodos para dos ID, entidades de muchos a muchos
-    //METODO GET POR ID (Traer un solo registro de la entidad de la  Db)
-    /*[HttpGet('{idUsua}/{idRol}')]
-    [Authorize]
+    //Encontrar por tipo categoria las hamburguesas que pertenecen a esa categoria 
+    [HttpGet("Hamburguesa/{categoria}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-
-    public async Task<ActionResult<UsuariosRolesDto>> Get( int idUsua, int idRol)
+    public async Task<ActionResult<List<CategoriaXhamburguesaDto>>> GetHamburguesa(string categoria)
     {
-        var usuarioRol = await _UnitOfWork.UsuariosRoles.GetByIdAsync(idUsua, idRol);
-
-        if (usuarioRol == null) {
-            return NotFound();
-        }
-
-        return this.mapper.Map<UsuariosRolesDto>(usuarioRol);
+        var categorias = await _UnitOfWork.Categorias.GetAllHamburguesasAsync(categoria);
+        return this.mapper.Map<List<CategoriaXhamburguesaDto>>(categorias);
     }
-
-    //METODO PUT (editar un registro de la entidad de la Db)
-    [HttpPut('{idUsua}/{idRol}')]
-    [Authorize(Roles = 'Administrador')]
-
-
-    public async Task<ActionResult<UsuariosRolesDto>> Put(int idUsua, int idRol, [FromBody] UsuariosRolesDto usuariosRolesDto)
-    {
-        if (usuariosRolesDto == null) {
-            return NotFound();
-        }
-
-        var usuarioRol = this.mapper.Map<UsuariosRoles>(usuariosRolesDto);
-        usuarioRol.UsuarioId = idUsua;
-        usuarioRol.RolId = idRol;
-        _UnitOfWork.UsuariosRoles.Update(usuarioRol);
-        await _UnitOfWork.SaveAsync();
-
-        return this.mapper.Map<UsuariosRolesDto>(usuarioRol);
-    }
-
-    //METODO DELETE (Eliminar un registro de la entidad de la Db)
-    [HttpDelete('{idUsua}/{idRol}')]
-    [Authorize(Roles = 'Administrador')]
-
-
-    public async Task<ActionResult<UsuariosRolesDto>> Delete(int idUsua, int idRol)
-    {
-        var usuarioRol = await _UnitOfWork.UsuariosRoles.GetByIdAsync (idUsua, idRol);
-
-        if (usuarioRol == null) {
-            return NotFound();
-        }
-
-        _UnitOfWork.UsuariosRoles.Remove(usuarioRol);
-        await _UnitOfWork.SaveAsync();
-
-        return NoContent();
-    }*/
 }
 

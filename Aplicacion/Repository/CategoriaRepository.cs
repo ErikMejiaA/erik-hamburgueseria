@@ -48,6 +48,13 @@ public class CategoriaRepository : GenericRepository<Categoria>, ICategoriaInter
         return (totalRegistros, registros);
     }
 
-    
-    
+    public async Task<IEnumerable<Categoria>> GetAllHamburguesasAsync(string categoria)
+    {
+        var lstHamburguesa = _context.Set<Categoria>()
+        .Include(p => p.Hamburguesas)
+        .Where(p => p.Nombre.ToLower().Contains(categoria.ToLower()))
+        .ToListAsync();
+
+        return await lstHamburguesa;
+    }
 }

@@ -20,7 +20,9 @@ public class MappingProfile : Profile
 
         CreateMap<Ingrediente, IngredienteDto>().ReverseMap();
         CreateMap<Ingrediente, IngredienteXhamburguesaDto>().ReverseMap();
-        
+        CreateMap<Ingrediente, IngredientesEnStockDto>().ReverseMap();
+
+        CreateMap<Hamburguesa_ingredientes, Hamburguesa_ingredientesDto>().ReverseMap();
     }
 
 }

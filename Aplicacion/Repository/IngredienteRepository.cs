@@ -46,4 +46,16 @@ public class IngredienteRepository : GenericRepository<Ingrediente>, IIngredient
 
         return (totalRegistros, registros);
     }
+
+    public async Task<IEnumerable<Ingrediente>> GetAllIngredientesAsync(int stock)
+    {
+        //return await _context.Set<Ingrediente>()
+        //.Include(p => p.Hamburguesas)
+        //.ToListAsync();
+        var lstIngredientes = _context.Set<Ingrediente>()
+        .Where(p => p.Stock < stock)
+        .ToListAsync();
+
+        return await lstIngredientes;
+    }
 }

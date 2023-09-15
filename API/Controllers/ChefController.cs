@@ -123,5 +123,31 @@ public class ChefController : BaseApiController
 
         return NoContent();
     }
+
+    //encontrar el nombre del Chef que trabaja con algun tipo de carne 
+    [HttpGet("ChefDeCarnes/{tipoCarne}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+    public async Task<ActionResult<List<ChefDto>>> GetChefDeCarnes(string tipoCarne)
+    {
+        var chefs = await _UnitOfWork.Chefs.GetAllChefsCarnesAsync(tipoCarne);
+        return this.mapper.Map<List<ChefDto>>(chefs);
+    }
+
+    //Encontrar las hamburguesas que pertenecen a un chef determinado
+    [HttpGet("Chef/{nombre}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+    public async Task<ActionResult<List<ChefXhamburguesaDto>>> GetHamburguesa(string nombre)
+    {
+        var chefs = await _UnitOfWork.Chefs.GetAllHamburguesasChefAsync(nombre);
+        return this.mapper.Map<List<ChefXhamburguesaDto>>(chefs);
+    }
         
 }

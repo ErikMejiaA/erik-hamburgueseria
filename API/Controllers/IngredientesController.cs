@@ -123,5 +123,18 @@ public class IngredientesController : BaseApiController
 
         return NoContent();
     }
+
+    //Condulta traer los ingredientes con un stock < a 400
+    [HttpGet("BuscarStockMenorA/{stock}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+    public async Task<ActionResult<List<IngredientesEnStockDto>>> GetStock(int stock)
+    {
+        var ingredientes = await _UnitOfWork.Ingredientes.GetAllIngredientesAsync(stock);
+        return this.mapper.Map<List<IngredientesEnStockDto>>(ingredientes);
+    }
         
 }
