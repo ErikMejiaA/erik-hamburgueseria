@@ -124,7 +124,7 @@ public class ChefController : BaseApiController
         return NoContent();
     }
 
-    //encontrar el nombre del Chef que trabaja con algun tipo de carne 
+    //Consulta para encontrar el nombre del Chef que trabaja con algun tipo de carne 
     [HttpGet("ChefDeCarnes/{tipoCarne}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -133,11 +133,20 @@ public class ChefController : BaseApiController
 
     public async Task<ActionResult<List<ChefDto>>> GetChefDeCarnes(string tipoCarne)
     {
+        if (string.IsNullOrEmpty(tipoCarne)) {
+            throw new UnauthorizedAccessException("No se ingreso ningun tipo de carne a buscar");
+        }
+
         var chefs = await _UnitOfWork.Chefs.GetAllChefsCarnesAsync(tipoCarne);
+
+        if ((chefs.Count() == 0) || (chefs == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
         return this.mapper.Map<List<ChefDto>>(chefs);
     }
 
-    //Encontrar las hamburguesas que pertenecen a un chef determinado
+    //Conasulta para Encontrar las hamburguesas que pertenecen a un chef determinado
     [HttpGet("Chef/{nombre}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -146,7 +155,16 @@ public class ChefController : BaseApiController
 
     public async Task<ActionResult<List<ChefXhamburguesaDto>>> GetHamburguesa(string nombre)
     {
+        if (string.IsNullOrEmpty(nombre)) {
+            throw new UnauthorizedAccessException("No se ingreso ningun nombre a buscar");
+        }
+
         var chefs = await _UnitOfWork.Chefs.GetAllHamburguesasChefAsync(nombre);
+
+        if ((chefs.Count() == 0) || (chefs == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+        
         return this.mapper.Map<List<ChefXhamburguesaDto>>(chefs);
     }
         

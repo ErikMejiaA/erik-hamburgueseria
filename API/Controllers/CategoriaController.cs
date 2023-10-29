@@ -131,11 +131,40 @@ public class CategoriaController : BaseApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-
     public async Task<ActionResult<List<CategoriaXhamburguesaDto>>> GetHamburguesa(string categoria)
     {
+        if (string.IsNullOrEmpty(categoria)) {
+            throw new UnauthorizedAccessException("No se ingreso ninguna categoria a buscar");
+        }
+
         var categorias = await _UnitOfWork.Categorias.GetAllHamburguesasAsync(categoria);
+
+        if ((categoria.Count() == 0) || (categoria == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
         return this.mapper.Map<List<CategoriaXhamburguesaDto>>(categorias);
+    }
+
+    //Consulta para encontrar la lista de categorias que incluya en su descripcion alguna palabra n
+    [HttpGet("BuscarCateg/{descripcion}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<CategoriaDto>>> GetDescripcioCateg(string descripcion)
+    {
+        if (string.IsNullOrEmpty(descripcion)) {
+            throw new UnauthorizedAccessException("No se ingreso ninguna descripcion para buscar");
+        }
+
+        var lstCategorias = await _UnitOfWork.Categorias.GetAllCategoriaConAsync(descripcion);
+
+        if ((lstCategorias.Count() == 0) || (lstCategorias == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
+        return this.mapper.Map<List<CategoriaDto>>(lstCategorias);
     }
 }
 

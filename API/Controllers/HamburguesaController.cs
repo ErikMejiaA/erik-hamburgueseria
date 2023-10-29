@@ -124,5 +124,85 @@ public class HamburguesaController : BaseApiController
         return NoContent();
     }
 
+    //Consulta para obtener las Hamburguesas segun un ingrediente
+    [HttpGet("HamburPor/{ingrediente}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<HamburguesaXingredienteDto>>> GetHamburIngredi(string ingrediente)
+    {
+        if (string.IsNullOrEmpty(ingrediente)) {
+            throw new UnauthorizedAccessException("No se ingreso el Ingrediente a Buscar");
+        }
+
+        var hamburguesa = await _UnitOfWork.Hamburguesas.GetAllHamburIngredAsync(ingrediente);
+
+        if ((hamburguesa.Count() == 0) || (hamburguesa == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
+        return this.mapper.Map<List<HamburguesaXingredienteDto>>(hamburguesa);
+    }
+
+    //Consulta para determinar que hamburguesas no contiene un ingrediente 
+    [HttpGet("HamburSin/{ingrediente}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<HamburguesaXingredienteDto>>> GetHamburSin(string ingrediente)
+    {
+        if (string.IsNullOrEmpty(ingrediente)) {
+            throw new UnauthorizedAccessException("No se ingreso el Ingrediente a Buscar");
+        }
+
+        var hamburguesaSin = await _UnitOfWork.Hamburguesas.GetAllHamburguesaSinAsync(ingrediente);
+
+        if ((hamburguesaSin.Count() == 0) || (hamburguesaSin == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
+        return this.mapper.Map<List<HamburguesaXingredienteDto>>(hamburguesaSin);
+    }
+
+    //Consulta para determinar las Hamburguesas que son menores a un precion n
+    [HttpGet("HamburMenorA/{precio}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<HamburguesaDto>>> GetPrecioHamburMenor(decimal precio)
+    {
+        if (decimal.IsNegative(precio)) {
+            throw new UnauthorizedAccessException("El precio ingresado no puede ser negativo");
+        }
+
+        var lstPrecioHambur = await _UnitOfWork.Hamburguesas.GetAllPrecioHamburguesaMenorAsync(precio);
         
+        if ((lstPrecioHambur.Count() == 0) || (lstPrecioHambur == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
+        return this.mapper.Map<List<HamburguesaDto>>(lstPrecioHambur);
+    }
+
+    //Ordenar las Hamburguesas en orden Ascendente (menor a mayor) segun su precio
+    [HttpGet("OrdenAscendente")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<HamburguesaDto>>> GetOrdenarAscendente()
+    {
+        var lstOrdenadaAsc = await _UnitOfWork.Hamburguesas.GetAllOrdenAscendenteAsync();
+
+        if ((lstOrdenadaAsc.Count() == 0) || (lstOrdenadaAsc == null)) {
+            throw new UnauthorizedAccessException("No se encontro ningun elemento");
+        }
+
+        return this.mapper.Map<List<HamburguesaDto>>(lstOrdenadaAsc);
+    }
+
+  
 }

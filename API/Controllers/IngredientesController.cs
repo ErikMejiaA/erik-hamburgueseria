@@ -133,8 +133,97 @@ public class IngredientesController : BaseApiController
 
     public async Task<ActionResult<List<IngredientesEnStockDto>>> GetStock(int stock)
     {
+        if (int.IsNegative(stock)) {
+            throw new UnauthorizedAccessException("el stock igresado es invalido");
+        }
+
         var ingredientes = await _UnitOfWork.Ingredientes.GetAllIngredientesAsync(stock);
+
+        if ((ingredientes == null) || (ingredientes.Count() == 0)) {
+            throw new UnauthorizedAccessException("No se encotro ningun elemento");
+        }
+
         return this.mapper.Map<List<IngredientesEnStockDto>>(ingredientes);
     }
+
+    //Consulta para determinar las hambuquesas que tiene un determinado ingrediente
+    [HttpGet("HamburguesaDe/{ingrediente}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<IngredienteXhamburguesaDto>>> GetHamburIngredi(string ingrediente)
+    {
+        if (string.IsNullOrEmpty(ingrediente)) {
+            throw new UnauthorizedAccessException("El parametro Ingrediente esta Nulo");
+        }
+        
+        var lstHamburIngred = await _UnitOfWork.Ingredientes.GetAllIngrediXhamburAsync(ingrediente);
+
+        if ((lstHamburIngred == null) || (lstHamburIngred.Count() == 0)) {
+            throw new UnauthorizedAccessException("No se encotro ningun elemento");
+        }
+
+        return this.mapper.Map<List<IngredienteXhamburguesaDto>>(lstHamburIngred);
+    }
+
+    //Consulta para determinar el ingrediente mas caro que hay 
+    [HttpGet("IngredienteMasCaro")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IngredienteDto>> GetIngredienteMasCaro()
+    {
+        var ingredieneCaro = await _UnitOfWork.Ingredientes.GetIndredienteMasCaroAsync();
+
+        if (ingredieneCaro == null) {
+            throw new UnauthorizedAccessException("No se encotro ningun elemento");
+        }
+        
+        return this.mapper.Map<IngredienteDto>(ingredieneCaro);
+    }
+
+    //Consulta para determinar los ingredientes que esta dentro de un rango determinado segun un precio inferior y superior
+    [HttpGet("RangoPrecio/{limInferior}/{LimSuperior}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<IngredienteDto>>> GetRangoPrecio(decimal limInferior, decimal limSuperior)
+    {
+        if (decimal.IsNegative(limInferior) || decimal.IsNegative(limSuperior) || (limInferior > limSuperior)) {
+            throw new UnauthorizedAccessException("Uno de los limites ingresados en negativo o estan invertidos los limites");
+        }
+
+        var lstIngredRangoPrecio = await _UnitOfWork.Ingredientes.GetAllPrecioRangoAsync(limInferior, limSuperior);
+
+        if ((lstIngredRangoPrecio == null) || (lstIngredRangoPrecio.Count() == 0)) {
+            throw new UnauthorizedAccessException("No se encotro ningun elemento");
+        }
+
+        return this.mapper.Map<List<IngredienteDto>>(lstIngredRangoPrecio);
+    }
+
+    //Consulta para buscar por nombre de ingrediente y editar su descripcion 
+    [HttpPut("EditDescrip/{nombre}/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IngredienteDto>> Put(int id, string nombre, [FromBody] IngredienteDto ingredienteDto)
+    {
+        var editarDescrip = await _UnitOfWork.Ingredientes.GetEditarDescripcionAsync(nombre);
+        ingredienteDto.Id = editarDescrip.Id;
+        ingredienteDto.Nombre = editarDescrip.Nombre;
+        ingredienteDto.Precio = editarDescrip.Precio;
+        ingredienteDto.Stock = editarDescrip.Stock;
+
+        var editado =  this.mapper.Map<Ingrediente>(ingredienteDto);
+        _UnitOfWork.Ingredientes.Update(editado);
+        await _UnitOfWork.SaveAsync();
+        return this.mapper.Map<IngredienteDto>(editado);
+    }
+
         
 }

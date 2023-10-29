@@ -48,5 +48,41 @@ public class HamburguesaRepository : GenericRepository<Hamburguesa>, IHamburgues
         return (totalRegistros, registros);
     }
 
+    public async Task<IEnumerable<Hamburguesa>> GetAllHamburIngredAsync(string ingrediente)
+    {
+        var hamburIngred = _context.Set<Hamburguesa>()
+        .Include(p => p.Ingredientes)
+        .Where(p => p.Ingredientes.Any(p => p.Nombre.ToLower().Contains(ingrediente.ToLower())))
+        .ToListAsync();
 
+        return await hamburIngred;
+    }
+
+    public async Task<IEnumerable<Hamburguesa>> GetAllHamburguesaSinAsync(string ingrediente)
+    {
+        var hamburSin = _context.Set<Hamburguesa>()
+        .Include(p => p.Ingredientes)
+        .Where(p => !p.Ingredientes.Any(p => p.Nombre.ToLower().Contains(ingrediente.ToLower())))
+        .ToListAsync();
+
+        return await hamburSin;
+    }
+
+    public async Task<IEnumerable<Hamburguesa>> GetAllPrecioHamburguesaMenorAsync(decimal precio)
+    {
+        var lstHambMenorPrecio = _context.Set<Hamburguesa>()
+        .Where(p => p.Precio <= precio)
+        .ToArrayAsync();
+
+        return await lstHambMenorPrecio;
+    }
+
+    public async Task<IEnumerable<Hamburguesa>> GetAllOrdenAscendenteAsync()
+    {
+        var lstOrdenAscendente = _context.Set<Hamburguesa>()
+        .OrderBy(p => p.Precio)
+        .ToListAsync();
+
+        return await lstOrdenAscendente;
+    }
 }

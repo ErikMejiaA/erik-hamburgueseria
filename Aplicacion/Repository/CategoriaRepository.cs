@@ -57,4 +57,13 @@ public class CategoriaRepository : GenericRepository<Categoria>, ICategoriaInter
 
         return await lstHamburguesa;
     }
+
+    public async Task<IEnumerable<Categoria>> GetAllCategoriaConAsync(string descripcion)
+    {
+        var lstCategorias = _context.Set<Categoria>()
+        .Where(p => p.Descripcion.ToLower().Contains(descripcion.ToLower()))
+        .ToListAsync();
+
+        return await lstCategorias;
+    }
 }

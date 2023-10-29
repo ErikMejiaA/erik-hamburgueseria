@@ -10,13 +10,13 @@ namespace Aplicacion.Repository;
 
 public class UsuarioRepository : GenericRepository<Usuario>, IUsuario
 {
-     private readonly DbAppContext _context;
+    private readonly DbAppContext _context;
 
     public UsuarioRepository(DbAppContext context) : base(context)
     {
         _context = context;
     }
-        public async Task<Usuario> GetByUsernameAsync(string username)
+    public async Task<Usuario> GetByUsernameAsync(string username)
     {
         return await _context.Usuarios
                             .Include(u=>u.Roles)
