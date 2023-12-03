@@ -24,7 +24,10 @@ Realizar los EndPoints de las siguientes consultas: (70 ptos)
     el EndPoint tiene como paramentro el NOMBRE del chefs 
     el nombre de la peticion es Chef/{nombre}
 
-6. Agregar un nuevo ingrediente a la hamburguesa “Clásica” ***FALTA POR HACER ESTA CONSULTA***
+6. Agregar un nuevo ingrediente a la hamburguesa “Clásica”
+    Esta consulta se implemento en la tabla o entidads; **HAMBURGUESA**
+    el EndPoint tiene como parametro el nombre de la Hamburguesa a buscar, para agregarle despues el nuevo ingrediente
+    El nombre de la peticion es /AgregarNuevoIngredienteA/{nombreHamburguesa}
 
 7. Encontrar todas las hamburguesas que contienen “Pan integral” como ingrediente
     Esta consulta se implemento en las siguientes tablas o entidades; **HAMBURGUESAS** y en la de **INGREDIENTES**
@@ -64,8 +67,11 @@ Realizar los EndPoints de las siguientes consultas: (70 ptos)
     el nombre de la peticion es: /OrdenAscendente.
 
 13. Encontrar todos los ingredientes cuyo precio sea entre $2 y $5
-    Esta consulta se implemeto en la tabla de **INGREDIENTES**
+    Esta consulta se implemento en la tabla de **INGREDIENTES**
     el EndPoint tiene como parametro de entrada un limte Inferior y un limite superior en donde dichos limites corresponde al pecio de los ingredientes. retorna un rango de igredientes segun el rengo del precio ingresado
     el nombre de la peticion es: /RangoPrecio/{limInferior}/{limSuperior}
 
-14. Actualizar la descripción del “Pan” a “Pan fresco y crujiente” ***FALTA REALIZAR ESTA CONSULTA***
+14. Actualizar la descripción del “Pan” a “Pan fresco y crujiente” (PUT)
+    Esta consulta se implemento en la tabla de **INGREDIENTES**
+    El Enpointd tiene como parametro el nombre del ingrediente que se decea editar sus descripcion 
+    el nombre de la peticion es /ActualizarDescrip/{nombreIngrediente}.

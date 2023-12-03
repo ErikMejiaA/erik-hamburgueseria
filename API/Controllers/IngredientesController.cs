@@ -205,24 +205,29 @@ public class IngredientesController : BaseApiController
         return this.mapper.Map<List<IngredienteDto>>(lstIngredRangoPrecio);
     }
 
-    //Consulta para buscar por nombre de ingrediente y editar su descripcion 
-    [HttpPut("EditDescrip/{nombre}/{id}")]
+    //Consulta para buscar por nombre de ingrediente para editarlo o actualizar su descripcion 
+    [HttpPut("ActualizarDescrip/{nombreIngrediente}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IngredienteDto>> Put(int id, string nombre, [FromBody] IngredienteDto ingredienteDto)
+    public async Task<ActionResult<IngredienteActualizarDto>> Put(string nombreIngrediente, [FromBody] IngredienteActualizarDto ingredienteDto)
     {
-        var editarDescrip = await _UnitOfWork.Ingredientes.GetEditarDescripcionAsync(nombre);
-        ingredienteDto.Id = editarDescrip.Id;
-        ingredienteDto.Nombre = editarDescrip.Nombre;
-        ingredienteDto.Precio = editarDescrip.Precio;
-        ingredienteDto.Stock = editarDescrip.Stock;
+        if (string.IsNullOrEmpty(nombreIngrediente)) {
+            throw new UnauthorizedAccessException("Ingrese un nombre de algun ingrediente");
+        }
 
         var editado =  this.mapper.Map<Ingrediente>(ingredienteDto);
-        _UnitOfWork.Ingredientes.Update(editado);
+        var editarDescrip = await _UnitOfWork.Ingredientes.GetEditarDescripcionAsync(nombreIngrediente);
+
+        if (editarDescrip == null) {
+            throw new UnauthorizedAccessException("No se encotro ningun Ingrediente");
+        }
+        
+        editarDescrip.Descripcion = editado.Descripcion;
+        _UnitOfWork.Ingredientes.Update(editarDescrip);
         await _UnitOfWork.SaveAsync();
-        return this.mapper.Map<IngredienteDto>(editado);
+        return this.mapper.Map<IngredienteActualizarDto>(editarDescrip);
     }
 
         

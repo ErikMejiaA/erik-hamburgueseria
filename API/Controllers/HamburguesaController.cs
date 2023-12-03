@@ -204,5 +204,34 @@ public class HamburguesaController : BaseApiController
         return this.mapper.Map<List<HamburguesaDto>>(lstOrdenadaAsc);
     }
 
-  
+    //Metodo para agregar un neuvo ingrediente a una hamburguesa cualquiera 
+    [HttpPost("AgregarNuevoIngredienteA/{nombreHamburguesa}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<AgregarHamburguesaIngredienteDto>> Post(string nombreHamburguesa, AgregarHamburguesaIngredienteDto NuevoIngredienteDto)
+    {
+        if ((string.IsNullOrEmpty(nombreHamburguesa)) || (nombreHamburguesa.Length == 0)) {
+            throw new UnauthorizedAccessException("Ingrese el nombre de la hamburguesa a buscar");
+        }
+
+        var hamburguesa = await _UnitOfWork.Hamburguesas.GetHamburguesaByNameAsync(nombreHamburguesa);
+
+        if (hamburguesa == null) {
+            throw new UnauthorizedAccessException("No se encontro ninguna Hamburguesa con ese nombre");
+        }
+
+        var nuevoIngrediente = this.mapper.Map<Hamburguesa_ingredientes>(NuevoIngredienteDto);
+        nuevoIngrediente.Hamburguesa_id = hamburguesa.Id;
+        _UnitOfWork.Hamburguesa_Ingredientes.Add(nuevoIngrediente);
+        await _UnitOfWork.SaveAsync();
+
+        if (nuevoIngrediente == null) {
+            return BadRequest();
+        }
+
+        return this.mapper.Map<AgregarHamburguesaIngredienteDto>(nuevoIngrediente);
+    }
+
 }

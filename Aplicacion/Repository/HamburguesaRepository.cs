@@ -85,4 +85,13 @@ public class HamburguesaRepository : GenericRepository<Hamburguesa>, IHamburgues
 
         return await lstOrdenAscendente;
     }
+
+    public async Task<Hamburguesa> GetHamburguesaByNameAsync(string nombre)
+    {
+        var Hamburguesa = _context.Set<Hamburguesa>()
+        .Where(p => p.Nombre.ToLower().Contains(nombre.ToLower()))
+        .FirstAsync();
+
+        return await Hamburguesa;
+    }
 }

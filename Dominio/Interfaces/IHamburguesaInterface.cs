@@ -8,5 +8,6 @@ public interface IHamburguesaInterface : IGenericInterface<Hamburguesa>
     Task<IEnumerable<Hamburguesa>> GetAllHamburguesaSinAsync(string ingrediente);
     Task<IEnumerable<Hamburguesa>> GetAllPrecioHamburguesaMenorAsync(decimal precio);
     Task<IEnumerable<Hamburguesa>> GetAllOrdenAscendenteAsync();
+    Task<Hamburguesa> GetHamburguesaByNameAsync(string nombre);
         
 }
